@@ -11,27 +11,39 @@ class OrderManager
         $this->pdo = Connect::getConnection();
     }
 
-    public function getOrderInformation($pizzaId, $sauceId, $sizeID)
+    public function getPizzaName($pizzaId)
     {
         $stmt = $this->pdo->prepare("SELECT name FROM pizzas WHERE id = ?");
         $stmt->execute([$pizzaId]);
-        $pizzaRow = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
+    public function getSauceName($sauceId)
+    {
         $stmt = $this->pdo->prepare("SELECT name FROM sauces WHERE id = ?");
         $stmt->execute([$sauceId]);
-        $sauceRow = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
+    public function getSizeValue($sizeID)
+    {
         $stmt = $this->pdo->prepare("SELECT value FROM sizes WHERE id = ?");
         $stmt->execute([$sizeID]);
-        $sizeRow = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
-        if ($pizzaRow && $sauceRow) {
+    public function getOrderInformation($pizzaId, $sauceId, $sizeID)
+    {
+        $pizzaRow = $this->getPizzaName($pizzaId);
+        $sauceRow = $this->getSauceName($sauceId);
+        $sizeRow = $this->getSizeValue($sizeID);
+
+        if ($pizzaRow && $sauceRow && $sizeRow) {
             return $pizzaRow['name'] . ' (' . $sizeRow['value'] . ' см)  ' . 'соус: ' . $sauceRow['name'];
         } else {
             return null;
         }
     }
-
 
     public function getPizzaPrice($pizzaID, $sizeID)
     {
@@ -49,12 +61,33 @@ class OrderManager
         ");
 
         $stmt->execute([$pizzaID, $sizeID]);
-        $price = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
-        if ($price) {
-            return $price['price'];
+    public function getSaucePrice($sauceID)
+    {
+        $stmt = $this->pdo->prepare("SELECT price FROM sauces WHERE id = ?");
+        $stmt->execute([$sauceID]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getTotalPrice($pizzaID, $sizeID, $sauceID)
+    {
+        $pizzaPriceRow = $this->getPizzaPrice($pizzaID, $sizeID);
+        $soucePriceRow = $this->getSaucePrice($sauceID);
+
+        if ($pizzaPriceRow && $soucePriceRow) {
+            $totalPrice =  $pizzaPriceRow['price'] + $soucePriceRow['price'];
+            return 'Суммарная стоимость заказа: ' . $totalPrice . ' р.';
         } else {
             return null;
         }
+    }
+
+    public function getCheck($pizzaId, $sauceId, $sizeID)
+    {
+        $check =  $this->getOrderInformation($pizzaId, $sauceId, $sizeID) . '<br>' .
+        $this->getTotalPrice($pizzaId, $sauceId, $sizeID);
+        return $check;
     }
 }
