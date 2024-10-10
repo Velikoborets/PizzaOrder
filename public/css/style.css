@@ -1,0 +1,56 @@
+html {
+    background-color: #6b6b6b;
+    color: #ebebeb;
+}
+
+.container {
+    text-align: center;
+    margin: 40px;
+    padding: 10px;
+    max-width: 650px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+}
+
+button {
+    max-width: 160px;
+    display: inline-block;
+    margin: 16px 14px;
+    text-decoration: none;
+    padding: 9px;
+    border: 2px solid #747474;
+    border-radius: 4px;
+    color: #e0e0e0;
+    font-weight: 500;
+    background-color: #363636;
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #e0e0e0;
+    color: black;
+}
+
+select {
+    background-color: #363636;
+    color: #e0e0e0;
+    border: 2px solid #747474;
+    border-radius: 4px;
+    padding: 8px;
+    max-width: 160px;
+    margin: 16px 14px;
+    cursor: pointer;
+    transition: all 0.3s ease 0s;
+}
+
+select:hover {
+    background-color: #e0e0e0;
+    color: black;
+}
+
+.check {
+    padding: 10px;
+    text-align: left;
+    font-size: 16px;
+}
