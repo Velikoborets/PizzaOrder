@@ -1,0 +1,20 @@
+{
+  "name": "artur/pizza-order",
+  "autoload": {
+    "psr-4": {
+      "Abstract\\": "src/abstracts",
+      "Classes\\": "src/classes",
+      "Interfaces\\": "src/interfaces"
+    }
+  },
+  "authors": [
+    {
+      "name": "Velikoborets",
+      "email": "gtahzby1@gmail.com"
+    }
+  ],
+  "require": {
+    "ext-json": "*",
+    "ext-pdo": "*"
+  }
+}

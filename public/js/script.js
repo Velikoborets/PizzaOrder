@@ -3,7 +3,7 @@ $(document).ready(function() {
         event.preventDefault();
         $.ajax({
             type: "POST",
-            url: "AjaxHandler.php",
+            url: "index.php",
             data: $(this).serialize(),
             dataType: "json",
             success: function(data) {

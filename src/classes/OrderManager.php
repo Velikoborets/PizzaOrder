@@ -1,13 +1,16 @@
 <?php
 
-require_once 'Connect.php';
-class OrderManager
+namespace Classes;
+
+use Interfaces\iOrderManager;
+
+class OrderManager implements iOrderManager
 {
     private $pdo;
 
     public function __construct()
     {
-        // Используем статический метод для получения Соединение с Б\Д
+        // Используем статический метод для получения соединения с Б\Д
         $this->pdo = Connect::getConnection();
     }
 
@@ -15,21 +18,21 @@ class OrderManager
     {
         $stmt = $this->pdo->prepare("SELECT name FROM pizzas WHERE id = ?");
         $stmt->execute([$pizzaId]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     public function getSauceName($sauceId)
     {
         $stmt = $this->pdo->prepare("SELECT name FROM sauces WHERE id = ?");
         $stmt->execute([$sauceId]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     public function getSizeValue($sizeID)
     {
         $stmt = $this->pdo->prepare("SELECT value FROM sizes WHERE id = ?");
         $stmt->execute([$sizeID]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     public function getOrderInformation($pizzaId, $sauceId, $sizeID)
@@ -61,14 +64,14 @@ class OrderManager
         ");
 
         $stmt->execute([$pizzaID, $sizeID]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     public function getSaucePrice($sauceID)
     {
         $stmt = $this->pdo->prepare("SELECT price FROM sauces WHERE id = ?");
         $stmt->execute([$sauceID]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     public function getTotalPrice($pizzaID, $sizeID, $sauceID)
@@ -77,9 +80,9 @@ class OrderManager
         $soucePriceRow = $this->getSaucePrice($sauceID);
 
         if ($pizzaPriceRow && $soucePriceRow) {
-            $totalPrice =  $pizzaPriceRow['price'] + $soucePriceRow['price'];
+            $totalPrice = $pizzaPriceRow['price'] + $soucePriceRow['price'];
 
-            // Для доп. задания
+            // Доп. задание
             $usdCourse = $this->getUsdCourse();
             $totalRubPrice = $totalPrice * $usdCourse;
             $totalRubPrice = round($totalRubPrice, 2);
@@ -91,12 +94,12 @@ class OrderManager
 
     public function getCheck($pizzaId, $sauceId, $sizeID)
     {
-        $check =  $this->getOrderInformation($pizzaId, $sauceId, $sizeID) . '<br>' .
+        $check = $this->getOrderInformation($pizzaId, $sauceId, $sizeID) . '<br>' .
         $this->getTotalPrice($pizzaId, $sauceId, $sizeID);
         return $check;
     }
 
-    // Доп. задание (конвертер валюты)
+    // Доп. задание (конвертер валюты через API НБ РБ)
     public function getUsdCourse()
     {
         $apiUrl = 'https://www.nbrb.by/api/exrates/rates/USD?parammode=2'; // URL API НБРБ
@@ -105,9 +108,9 @@ class OrderManager
 
         // Проверяем, что данные получены корректно
         if (isset($data['Cur_OfficialRate'])) {
-            return $data['Cur_OfficialRate']; // Возвращаем курс обмена
+            return $data['Cur_OfficialRate'];
         } else {
-            throw new Exception("Не удалось получить курс обмена"); // Исключение, если данные не получены
+            throw new \Exception("Не удалось получить курс обмена");
         }
     }
 }
