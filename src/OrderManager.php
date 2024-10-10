@@ -78,7 +78,12 @@ class OrderManager
 
         if ($pizzaPriceRow && $soucePriceRow) {
             $totalPrice =  $pizzaPriceRow['price'] + $soucePriceRow['price'];
-            return 'Суммарная стоимость заказа: ' . $totalPrice . ' р.';
+
+            // Для доп. задания
+            $usdCourse = $this->getUsdCourse();
+            $totalRubPrice = $totalPrice * $usdCourse;
+            $totalRubPrice = round($totalRubPrice, 2);
+            return 'Суммарная стоимость заказа: ' . $totalRubPrice . ' р.';
         } else {
             return null;
         }
@@ -89,5 +94,20 @@ class OrderManager
         $check =  $this->getOrderInformation($pizzaId, $sauceId, $sizeID) . '<br>' .
         $this->getTotalPrice($pizzaId, $sauceId, $sizeID);
         return $check;
+    }
+
+    // Доп. задание (конвертер валюты)
+    public function getUsdCourse()
+    {
+        $apiUrl = 'https://www.nbrb.by/api/exrates/rates/USD?parammode=2'; // URL API НБРБ
+        $response = file_get_contents($apiUrl); // Получаем данные из API
+        $data = json_decode($response, true); // Декодируем JSON в массив
+
+        // Проверяем, что данные получены корректно
+        if (isset($data['Cur_OfficialRate'])) {
+            return $data['Cur_OfficialRate']; // Возвращаем курс обмена
+        } else {
+            throw new Exception("Не удалось получить курс обмена"); // Исключение, если данные не получены
+        }
     }
 }
