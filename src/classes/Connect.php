@@ -1,6 +1,7 @@
 <?php
 
 namespace Classes;
+
 class Connect
 {
     private static $pdo = null;
