@@ -33,6 +33,6 @@
     <div id="check"></div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="public/js/script.js"></script>
+<script src="public/js/script.js?v=1.0"></script>
 </body>
 </html>

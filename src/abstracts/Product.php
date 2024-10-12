@@ -1,6 +1,7 @@
 <?php
 
 namespace Abstracts;
+
 abstract class Product
 {
     public $id;

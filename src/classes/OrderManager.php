@@ -18,21 +18,39 @@ class OrderManager implements iOrderManager
     {
         $stmt = $this->pdo->prepare("SELECT name FROM pizzas WHERE id = ?");
         $stmt->execute([$pizzaId]);
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        $pizzaName =  $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!empty($pizzaName)) {
+            return $pizzaName;
+        } else {
+            throw new \Exception("Проблема с получением имени пиццы!");
+        }
     }
 
     public function getSauceName($sauceId)
     {
         $stmt = $this->pdo->prepare("SELECT name FROM sauces WHERE id = ?");
         $stmt->execute([$sauceId]);
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        $sauceName = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!empty($sauceName)) {
+            return $sauceName;
+        } else {
+            throw new \Exception("Проблема с получением имени соуса!");
+        }
     }
 
     public function getSizeValue($sizeID)
     {
         $stmt = $this->pdo->prepare("SELECT value FROM sizes WHERE id = ?");
         $stmt->execute([$sizeID]);
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        $size = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!empty($size)) {
+            return $size;
+        } else {
+            throw new \Exception("Проблема с получением размера!");
+        }
     }
 
     public function getOrderInformation($pizzaId, $sauceId, $sizeID)
@@ -64,14 +82,26 @@ class OrderManager implements iOrderManager
         ");
 
         $stmt->execute([$pizzaID, $sizeID]);
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        $pizzaPrice = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!empty($pizzaPrice)) {
+            return $pizzaPrice;
+        } else {
+            throw new \Exception("Проблема с получением цены пиццы!!");
+        }
     }
 
     public function getSaucePrice($sauceID)
     {
         $stmt = $this->pdo->prepare("SELECT price FROM sauces WHERE id = ?");
         $stmt->execute([$sauceID]);
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        $saucePrice = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!empty($saucePrice)) {
+            return $saucePrice;
+        } else {
+            throw new \Exception("Проблема с получением цены Соуса!");
+        }
     }
 
     public function getTotalPrice($pizzaID, $sizeID, $sauceID)
@@ -86,6 +116,7 @@ class OrderManager implements iOrderManager
             $usdCourse = $this->getUsdCourse();
             $totalRubPrice = $totalPrice * $usdCourse;
             $totalRubPrice = round($totalRubPrice, 2);
+
             return 'Суммарная стоимость заказа: ' . $totalRubPrice . ' р.';
         } else {
             return null;
@@ -110,7 +141,7 @@ class OrderManager implements iOrderManager
         if (isset($data['Cur_OfficialRate'])) {
             return $data['Cur_OfficialRate'];
         } else {
-            throw new \Exception("Не удалось получить курс обмена");
+            throw new \Exception("Не удалось получить курс доллара!");
         }
     }
 }
